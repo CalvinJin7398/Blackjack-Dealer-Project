@@ -1,0 +1,73 @@
+#BlackJack Dealer Project
+
+# List for Deck Card Options
+
+# No Jokers
+# Face Cards will act as '10'
+# Ace will act as '11' until the hand reaches over 21 where Ace will then act as '1'
+# cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+
+# create a function to deal cards to each player
+dealer_hand = []
+player_hand = []
+
+import random
+
+def deal_cards():
+    deck_cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+    card = random.choice(deck_cards)
+    return card
+
+# add the dealed cards to each hand
+for x in range(2):
+    dealer_hand.append(deal_cards())
+    player_hand.append(deal_cards())
+
+# create a function to calculate the sum of each starting hand. 0 will be 'Blackjack'
+def calculate_hand(cards):
+    if sum(cards) == 21 and len(cards) == 2:
+        return 0
+    if 11 in cards and sum(cards) > 21:
+        cards.remove(11)
+        cards.append(1)
+    return sum(cards)
+
+#When both turns end, compare the final hands. Player only wins when they beat the dealer.
+def compare(player_score, dealer_score):
+    if player_score == dealer_score or dealer_score == 0 or player_score > 21 or dealer_score <= 21 and dealer_score > player_score:
+        return "Dealer Wins!"
+    elif player_score <= 21 and player_score > dealer_score:
+        return "You Win!"
+    elif player_score <= 21 and dealer_score > 21:
+        return "You Win!"
+
+#Using a while loop to continue the game until it is over (dealing cards)
+
+is_game_over = False
+while not is_game_over:
+
+    dealer_score = calculate_hand(dealer_hand)
+    player_score = calculate_hand(player_hand)
+    print(f" Your hand: {player_hand}, Your Score: {player_score}")
+    print(f" Dealer hand: {dealer_hand}, Dealer Score: {dealer_score}")
+
+    #Create logic to determine if the turn should continue or not based off the hand
+    #if the turn continues, ask the player if they want to hit for another card
+    #The turn will also end when the player stops asking for another hit
+
+    if dealer_score == 0 or player_score == 0 or player_score > 21:
+        is_game_over = True
+    else:
+        player_hit = input("Do you want another card? 'y' or 'n' ")
+        if player_hit == "y":
+            player_hand.append(deal_cards())
+        else:
+            is_game_over = True
+
+#Dealer's Turn
+while dealer_score != 0 and dealer_score < 17:
+    dealer_hand.append(deal_cards())
+    dealer_score = calculate_hand(dealer_hand)
+
+print(f" Final Hands, Player: {player_score}, Dealer: {dealer_score}")
+print(compare(player_score, dealer_score))
